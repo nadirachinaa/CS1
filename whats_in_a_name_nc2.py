@@ -1,40 +1,38 @@
-
+'''
+'''
 def reverse_and_dispay(name):
+    '''
+    Function: reverse_and_dispay                            
+    Description: Reverses the input string        
+    Args:                                                   
+    name (str): name to reverse                      
+    Returns:                                                
+    str: reversed name                               
+    '''
     return(name)[::-1]
 
 
-def count_vowels(s):                       #have function count the amout of vowel
-    '''
-    Counts total vowels in a string and provides a subtotal for each vowel.
-    Args:
-        string (str): string to count 
-
-    Returns:
-        int: vowel count
-    '''
-    vc = 0                                 # set vowel cound to 0
-    vowels = list('aeiouAEIOU')
-   
-    for char in vowels:
-        if char in vowels:            #if there are vowels
-            vc = vc + 1
-            
-    return vc
-
 def count_consonants(name):
+    '''
+    Function: count_consonants                               
+    Description: Counts the number of consonants in a string
+    Args:                                                    
+    name (str): The string to analyze amount of consonants                    
+    Returns:                                                 
+    int: Total number of consonants 
+    '''
     cc = 0
-    vowels = list('aeiouAEIOU')
-   
-    for char in vowels:
-        if char not in vowels:
-            cc = cc + 1
-            
-    return cc
+    cons = list('bdfghjklmnpqrstvwxyzBDFGHJKLMNPQRSTVWXYZ')
 
+    for char in name:
+        if char in cons:
+            cc = cc + 1
+    return cc
 
 def count_vowels(string):
     '''
-    Counts total vowels in a string and provides a subtotal for each vowel.
+Function: count_vowels
+Description: Counts total vowels in a string and provides a subtotal for each vowel.
     Args:
         string (str): string to count 
 
@@ -47,90 +45,75 @@ def count_vowels(string):
     for char in string:
         if char in vowels:
             vc = vc + 1                             #vowel count is adding each timw
-            
     return vc
 
+def split_names(fullname):
+    names = []
+    current_name = ''
+
+    for char in fullname:
+        if char == ' ':
+            names.append(current_name)
+            current_name = ''
+        else:
+            current_name += char
+    names.append(current_name)
+    return names
 def first_name(name):                                   #the start of the function of the first name
-    name_list = list(name)
-    counter = 0
-    for letter in name_list:
-        if letter == " ":
-            break          # break functiom
-        else:
-            counter += 1
-    return (name_list[0:counter])
-                                                          #asking and print first name
+    '''
+    Function: first_name                                     
+    Description: Extracts the first name from a full name   
+    Args:                                                    
+    name (str): users full name with spaces                     
+    Returns:                                                 
+    list: list of characters in the first name
+    '''
+    name_list = split_names(name)
+    return name_list[0]
+                                                 #asking and print first name
 def last_name(name):                                    #the start of the function of the last name
-    reversed_name = reverse_and_dispay(name)
-    last_name_reversed = first_name(reversed_name)
-    last_name = reverse_and_dispay(last_name_reversed)
-    return last_name          #asking and print last name
+    name_list = split_names(name)
+    return name_list[-1]
 def middle_name(name):                                  #the start of the function of the middle name
-
-    output = ""
-    begin = 0
-    for index in range(0,len(name)):
-        if name [index] == " ":     
-            break
-        else:   
-            begin = begin +1  
-    print("77 begin is: " +str(begin))
-
-    end = 0
-
-    for index in  range (len(name) -1,-1,-1):
-        if name [index] == " ":
-            break
-        else:
-            end = end -1
-    
-
-    output = name[begin:end]
-    print("92: " +  output)
+    name_list = split_names(name)
+    return ' '.join(name_list[1:-1])
 
 def upper_case(name): 
-    num= 0       # Number set to 0 
-    output= ""
+    output = ""
     for letter in name:
-        num = ord (letter)    # Get ASCII value of the character
-        if num > 64 and num < 91:   # Check if the letter is lowercase letter (A-Z)
+        num = ord(letter)    # Get ASCII value of the character
+        if num >= 64 and num <= 91:   # Check if the letter is lowercase letter (A-Z)
             num = num + 32         # Convert to lowercase by adding 32 to ASCII value
-            letter = chr (num)     # Convert back to character
-            output = output + letter   # Append the converted (or original) character to output
-    else:
-        output = output = letter
-
+            letter = chr(num)     # Convert back to character
+        output = output + letter   # Append the converted (or original) character to output
     return output 
 
 def lower_case(name): 
-    
-    num= 0                    # Number set to 0 
-    output= ""
-    for letter in name:
-        num = ord (letter)     # Get ASCII value of the character
-        if num > 97 and num < 122: # Check if the letter is uppercase letter (A-Z)
-            num = num + 32     # Convert to lowercase by adding 32 to ASCII value
-            letter = chr (num) # Convert back to character
-            output = output + letter # Append the converted (or original) character to output
-        else:
-            output = output + letter
+    '''
+        Converts all uppercase letters in the input string 'name' to lowercase.
+        Non-uppercase characters are left unchanged.
 
+        Parameters:
+        name (str): The input string to be converted.
+
+        Returns:
+        str: A new string with all uppercase letters converted to lowercase.
+    '''
+
+    output = ""
+
+    for letter in name:
+        num = ord (letter)# Get ASCII value of the character
+        
+        if num >= 97 and num <= 122: # Check if the letter is uppercase letter (A-Z)
+            num = num - 32     # Convert to lowercase by adding 32 to ASCII value
+            letter = chr(num) # Convert back to character
+        output = output + letter # Append the converted (or original) character to output
     return output       # Return the final lowercase 
  
-    '''
-    Converts all uppercase letters in the input string 'name' to lowercase.
-    Non-uppercase characters are left unchanged.
-
-    Parameters:
-    name (str): The input string to be converted.
-
-    Returns:
-    str: A new string with all uppercase letters converted to lowercase.
-    '''
-    
-
 def hyphen(name):
     found = False
+    
     for letter in name:
         if letter == '-':
             found = True
@@ -138,15 +121,9 @@ def hyphen(name):
     return found
 
 def palindrome (name):
-    found = False
-    for letter in name:
-        if letter == 'palidrome':
-            found = True
-            break
-    return found
+    return name == reverse_and_dispay(name)
 
 def main():                                         
-
     name = input("Hi! What is your name?")          #inputing the question
     print("Welcome " + name)                        #printing what is their name
 
@@ -158,10 +135,10 @@ def main():
                         4. return first names
                         5. return last names
                         6. return middle names
-                        7. return boolean
-                        8. lower case
-                        9. upper case
-                        10. hyphen
+                        7. return lowercase
+                        8. uppercase
+                        9. hyphen
+                        10. palindrome
                         11. Quit
 
                             '''))
@@ -185,5 +162,7 @@ def main():
             print(hyphen(name))
         elif number == 10:
             print(palindrome(name))
+        elif number == 11:
+            exit()
             
 main()

@@ -6,112 +6,81 @@
   <title>Welcome to the Postoffice! Enter mail info!</title>
   <script>
   
-    function get_mailtype ( length, height, thickness )
-    {
-    type = "";
+    function get_mailtype (length, height, thickness) {
+      package_area = length + 2*(thickness + height) 
 
-    if ((length > 3.5 && length < 4.25) && (height > 3.5 && height < 6) && (thickness > .007 && thickness < .016 ))
-    {
-        type = "postcard";
-        return type;
+      if ((length > 3.5 && length < 4.25) && (height > 3.5 && height < 6) && (thickness > .007 && thickness < .016 )) {
+        return "postcard";
+      } else if ((length > 4.25 && length < 6) && (height > 6 && height < 11.5) && (thickness > .007 && thickness < .015)) {
+        return "large postcard";
+      } else if ((length > 3.5 && length < 6.125) && (height > 5 && height < 11.5) && (thickness > .016 && thickness < .25)) {
+        return "envelope";
+      } else if ((length > 6.125 && length < 24 ) && (height > 11 && height < 18) && (thickness > .25 && thickness < .5)) {  
+        return "large envelope";
+      } else if (length > 24 || height > 18 || thickness > .5 && package_area <= 84) {
+          type = "package";
+      } else if (length > 24 || height > 18 || thickness > .5 && package_area > 84 && package_area < 130) {
+          return "large package";
+      } else {
+          return 'unmailable';
+      }
     }
-    else if ((length > 4.25 && length < 6) && (height > 6 && height < 11.5) && (thickness > .007 && thickness < .015))
-    {
-        type = "large postcard";
-        return type;
-    }
-    elif ((length > 3.5 && length < 6.125) && (height > 5 && height < 11.5) && (thickness > .016 && thickness < .25))
-    {
-        type = "envelope";
-        return type;
-    }
-    elif ((length > 6.125 && length < 24 ) && (height > 11 && height < 18) && (thickness > .25 && thickness < .5))
-    {  
-      type = "large envelope";
-      return type;
-    }
-    
-    package_area= length + 2*(thickness + height) 
-    if (package_area > 84 && package_area < 130)
-        type = "package";
-    if (package_area > 84 && package_area < 130)
-        type = "large package";
-    else
-        type ='unmailable' 
-
-    console.log("the type is: " + type);
-    return type
-    }
-
-
-
     
     function get_cost(post_type, zones){
-    cost = 0
-
-    if (post_type == 'postcard')
-       {
-         cost = .2 + .03 * zones;
-       }
-    else if (post_type == 'large postcard')
-      {
-        cost = .37 + .03 * zones;
+      if (post_type == 'unmailable' || zones == 'unmailable') {
+        return 'unmailable';
+      } else if (post_type == 'postcard') {
+        return .2 + .03 * zones;
+      } else if (post_type == 'large postcard') {
+        return .37 + .03 * zones;
+      } else if (post_type == 'envelope') {
+        return .37 + .04 * zones;
+      } else if (post_type == 'large envelope') {
+        return .60 + .05 * zones;
+      } else if (post_type == 'package') {
+        return 2.95 + .25 * zones;
+      } else if (post_type == 'large package') {
+        return 3.95 + .35 * zones;
       }
-    else if (post_type == 'envelope')
-      {
-        cost = .37 + .04 * zones;
-      }
-    else if (post_type == 'large envelope')
-      {
-        cost = .60 + .05 * zones;
-      }
-    else if (post_type == 'package')
-      {
-        cost = 2.95 + .25 * zones;
-      }
-    else if (post_type == 'large package')
-      {
-        cost = 3.95 + .35 * zones;
-      }
-    return cost;
-
     }
-
-
-
 
     function zip_code(zip){
-   
-    output = 0
-
-    if (zip > 1 && zip < 6999)
-    {
-        return 1;
-    }
-
-    else if (zip > 7000 && zip < 19999)
-    {
-        return 2;
-    }
-    else if (zip > 20000 && zip < 35999)
-    {
-        return 3;
-    }
-    else if (zip > 36000 && zip < 62999)
-    { 
-        return 4;
-    }
-    else if (zip > 63000 && zip < 84999)
-    {
-        return 5;
-    }
-    else if (zip > 85000 && zip < 99999)
-    { 
-        return 6;
+    if (zip >= 1 && zip <= 6999) {
+      return 1;
+    } else if (zip >= 7000 && zip <= 19999) {
+      return 2;
+    } else if (zip >= 20000 && zip <= 35999) {
+      return 3;
+    } else if (zip >= 36000 && zip <= 62999) { 
+      return 4;
+    } else if (zip >= 63000 && zip <= 84999) {
+      return 5;
+    } else if (zip >= 85000 && zip <= 99999) { 
+      return 6;
+    } else {
+      return 'unmailable';
     }
 
     }//close the zip function
+    
+    function get_distance(zip_1, zip_2) {
+      from_zone = zip_code(zip_1);
+      to_zone = zip_code(zip_2);
 
+      if (from_zone == 'unmailable' || to_zone == 'unmailable') {
+        return 'unmailable';
+      }
+      return Math.abs(to_zone - from_zone);
+    }
+
+    function format_cost(cost) {
+      if (cost == 'unmailable') {
+        return 'unmailable';
+      }
+      cost = cost.toFixed(2);
+      cost = cost.toString().replace(/^0+/, '');
+      return cost;
+    }
     // This function reads two input values, adds them, and displays the result.
     function main() {
       // Get values from the input fields
@@ -124,55 +93,31 @@
       length = parseFloat(length);
       height = parseFloat(height);
       thickness = parseFloat(thickness);
-
-      console.log(length);
-      console.log(height);
-      console.log(thickness);
-
-
       zip_1 = parseInt(zip_1);
       zip_2 = parseInt(zip_2);
 
-
-
-     // determine distance
-
-      // Convert the values to numbers (since inputs are strings by default)
-      //let sum = parseFloat(num1) + parseFloat(num2);
-
-      // Display the result inside the <p> tag
-    to_zip = 0;
-    from_zip = 0;
-    from_zip = zip_code(zip_1);
-    to_zip = zip_code(zip_2);
-    total_distance =  to_zip - from_zip ;
-
-    console.log(total_distance);
-
-
-          
-    type = get_mailtype(length,height,thickness)
-
-    console.log("type is: " + type)
-
-    cost = get_cost(type, total_distance)
-    console.log("The cost is: " + cost);
-
-   
-
-    document.getElementById("result").innerText = "Cost: " + cost;
-
-    
+      distance = get_distance(zip_1, zip_2);
+      post_type = get_mailtype(length,height,thickness);
+      cost = get_cost(post_type, distance);
+      cost = format_cost(cost);
+      console.log("The cost is: " + cost);
+      document.getElementById("result").innerText = "Cost: " + cost;
     }
     
   </script>
+  <style>
+    body {
+      background-image: url('https://cdn.dribbble.com/userupload/29129651/file/original-9d0bb1e839b9d0efe68fce60424cdcd0.gif');
+
+    }
+  </style>
 </head>
 <body>
   <h2>Welcome to the Postoffice! Enter mail info!</h2>
 
   <!-- Input fields -->
   <input type="number" id="length" placeholder="Enter length number"> <br>
-  <input type="number" id="height" placeholder="Enter height number"> <br>
+  <input type="number" id="height" placeholder="Enter heigFht number"> <br>
   <input type="number" id="thickness" placeholder="Enter thickness number"> <br>
   <input type="number" id="zip_1" placeholder="Enter zip_1 number"> <br>
   <input type="number" id="zip_2" placeholder="Enter zip_2 number"> <br>
