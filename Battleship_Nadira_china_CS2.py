@@ -1,13 +1,17 @@
-'''
-Flower box
+import os
+import random
+import time
 
-Desricription:
+'''
+Author: Nadira china
+
+Bugs:
 
 Args:
 '''
 
-import random
-art = '''
+
+win_art = '''
 ⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⠀⠀⠀⠀
 ⢠⣤⣤⣤⣼⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣄⣤⣤⣠
 ⢸⠀⡶⠶⠾⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡷⠶⠶⡆⡼
@@ -26,6 +30,26 @@ art = '''
 ⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  ⡇⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠓⠲⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠶⠃⠀⠀⠀⠀⠀⠀
 '''
+lose_art = '''
+⢻⢭⡓⣆⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠸⣏⢖⡲⣅⠀⠀
+⣣⢾⡛⣜⢫⣦⠀⠀⢀⣤⠴⡦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣸⢏⡝⣆⢀
+⢿⣧⢹⣬⡷⣚⣒⣶⡾⣍⡞⡱⣞⡇⠀⠀⠀⠀⢀⣠⢤⠖⣦⡤⠤⡶⠦⠤⣤⢶⠲⠤⣄⠀⠀⠀⠀⠀⢀⡤⠶⢶⢤⡀⢸⣛⣮⢞⡜⡚
+⠈⡷⣻⢏⠶⣙⢶⣼⠟⡼⣜⡵⠋⠀⠀⠀⣠⠞⡩⢴⣿⣿⣾⣹⠐⢢⢁⡾⡵⠚⢻⣷⣤⡙⠲⢄⠀⠀⢾⣍⡻⣌⢧⣷⡾⡞⣥⢫⡝⣃
+⠀⢻⣿⢊⣟⣾⢫⢇⡻⣱⢺⠁⠀⠀⠀⡼⣡⣿⣄⣀⡿⣿⣿⡏⡇⢢⢸⡿⣷⣤⣼⠿⢿⣿⣷⣎⣷⠀⠈⠳⣵⡩⢖⡻⣱⢻⣌⡳⢎⡵
+⠀⠀⢻⡧⢞⡧⣋⣮⣕⡣⢿⠀⠀⢀⡼⢃⣻⢿⣿⣿⣧⠾⠟⡙⣧⣂⣌⢣⡛⡿⠿⠷⠾⠿⠿⠣⣌⠳⡀⢰⢯⡱⣫⡶⢥⣛⢮⡓⣏⢶
+⠀⠀⠈⢯⡧⣓⢧⡚⣽⣞⡾⠀⢀⡞⠠⣿⠀⡰⢂⣖⣤⣯⣾⣿⣿⣿⣿⣿⣿⣇⠄⣎⣱⣉⢎⡱⣘⡇⠹⡞⣮⢵⢯⣱⠳⡬⢧⡙⣦⠋
+⠀⠀⠀⠈⠳⣭⢲⡹⢲⡞⠁⠀⣼⢐⠡⡙⠳⠗⡛⣩⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⡁⡉⠛⣶⣵⠋⡐⢿⠈⠻⣆⢧⡛⢜⣣⠟⠁⠀
+⠀⠀⠀⠀⠀⠈⠉⠉⠁⠀⠀⢰⡇⢊⠔⡡⢊⠔⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡈⠡⣿⢹⡄⢡⢚⣇⠀⠈⠉⠉⠉⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⢊⠤⢑⠢⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⢹⠃⢢⢻⡄⢊⣏⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣇⠌⢢⠁⢎⣿⣿⣿⣿⣿⣿⣿⠿⠟⠿⢿⣿⣿⣿⣿⣿⣿⣏⡄⢣⢺⡇⢼⡋⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡊⠤⠉⢼⣿⣿⣿⣿⠿⠋⡄⠒⡌⢢⠐⡌⠻⣿⣿⣿⣿⣯⠛⢓⠛⣠⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⡘⡏⣿⣿⣿⡿⠋⡄⠣⠌⡱⢈⠄⢣⠐⡡⠘⢿⣿⣿⣿⡐⣌⢒⣰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⡅⠸⠿⢛⡡⠘⡄⠣⡘⠄⠣⡘⠄⢣⠐⣉⠂⠻⢿⠿⠁⢼⡲⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⣁⠦⠟⡁⢣⠐⡡⠂⡍⠰⢁⠎⡄⠣⢄⡉⠲⢦⣂⣉⢴⠗⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⢲⢥⣂⠅⣂⠑⡈⢅⠊⡐⠌⢡⢂⣌⣡⠶⣛⣙⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+'''
+
 
 def print_board(board):
     print('  1     2     3     4     5  ')
@@ -57,7 +81,7 @@ def place_ships(board):
             print('Enter integers only')
 
 
-def take_shot(real_board, display_board, shots):
+def take_shots(real_board, display_board, hits):      
     while True:
         try: 
             row = int(input('Enter shot row: ')) - 1
@@ -65,6 +89,8 @@ def take_shot(real_board, display_board, shots):
 
             if row > 4 or row < 0 or column > 4 or column < 0:
                 print('Please enter a valid number')
+            elif display_board[row][column] != '⚓':
+                print('Please enter an available spot')
             else:
                 break
         except ValueError:
@@ -72,20 +98,23 @@ def take_shot(real_board, display_board, shots):
 
     if real_board[row][column] == '🚢':
         display_board[row][column] = '🔥'
+        print("Wow! You hit one!")
+        hits += 1
+        return hits
+
     else:
         display_board[row][column] = '✖️'
-    shots.append((row, column))
-
-
-def check_winner():
-    ''''''
-    return False
+        print("You missed!")
 
 
 def main():
-    print("INSIDE MAIN GO ")
-    
     while True:
+        answer = input("Hello! Want to play Battleship? Type 'yes' to continue! ").lower()
+        
+        if answer != 'yes':
+            print("okay, bye!")
+            break
+
         real_board_player1 = [
             ['⚓']*5,
             ['⚓']*5,
@@ -113,32 +142,52 @@ def main():
             ['⚓']*5,
             ['⚓']*5,
             ['⚓']*5 ]
+        p1_hits = 0
+        p2_hits = 0
 
+        print('Placing ships for player 1...')
+        time.sleep(1)                                   #pauses the function for however many seconds are in parenthesis in this case (1)
+        print_board(real_board_player1)
+        
         for i in range(4):
             print(f'Player 1, place ship #{i+1}')
             place_ships(real_board_player1)
             print_board(real_board_player1)
+        time.sleep(2)
+        os.system('cls')
+
+        print('Placing ships for player 2...')
+        time.sleep(1)
+        print_board(real_board_player2)
 
         for i in range(4):
             print(f'Player 2, place ship #{i+1}')
             place_ships(real_board_player2)
             print_board(real_board_player2)
-        
+        time.sleep(2)
+        os.system('cls')
+
         print('Time to take shots!')
 
         while True:
-            print_board(display_board_player2)
-            take_shot(real_board_player2, display_board_player2)
+            print('Player 1, take a shot!')
+            time.sleep(1)
+            print_board(display_board_player2)  
+            p1_hits = take_shots(real_board_player2, display_board_player2, p1_hits)
 
-            if check_winner():
-                print(f'Player player 1 wins!')
+            if p1_hits == 4:
+                print_board(display_board_player2)  
+                print('Player 1 wins!')
                 break
 
-            print_board(display_board_player1)
-            take_shot(real_board_player1, display_board_player1)
+            print('Player 2, take a shot!')
+            time.sleep(1)
+            print_board(display_board_player1)  
+            p2_hits = take_shots(real_board_player1, display_board_player1, p2_hits)
 
-            if check_winner():
-                print(f'Player player 2 wins!')
+            if p2_hits == 4:
+                print_board(display_board_player1)  
+                print('Player 2 wins!')
                 break
-       
+    
 main()
